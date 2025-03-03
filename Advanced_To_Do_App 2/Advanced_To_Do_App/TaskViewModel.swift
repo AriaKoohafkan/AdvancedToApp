@@ -11,6 +11,7 @@ import UserNotifications
 class TaskViewModel: ObservableObject {
     @Published var tasks: [Task] = []
     
+    
     init() {
         requestNotificationPermission()
     }
@@ -44,10 +45,9 @@ class TaskViewModel: ObservableObject {
     func cancelTaskNotification(task: Task) {
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [task.id.uuidString])
     }
-    
     func addTask(title: String, dueDate: Date, category: TaskCategory, priority: TaskPriority) {
         let status = determineStatus(for: dueDate)
-        let newTask = Task(title: title, dueDate: dueDate, status: status, priority: priority, category: category)
+        let newTask = Task(title: title, dueDate: dueDate, status: status, category: category, priority: priority)
         tasks.append(newTask)
         schedualTaskNotification(for: newTask)
     }
@@ -69,29 +69,23 @@ class TaskViewModel: ObservableObject {
         return .pending
     }
     
-    func deleteTask(task: Task) {
-        tasks.removeAll { $0.id == task.id }
+    func deleteTask(byId id: UUID) {
+        tasks.removeAll { $0.id == id }
     }
     
-    func toggleTaskCompletion(task: Task) {
-        if let index = tasks.firstIndex(where: { $0.id == task.id }) {
-            if tasks[index].status == .completed {
-                tasks[index].status = .pending
-            } else {
-                tasks[index].status = .completed
-            }
-            
-            objectWillChange.send()
+    func toggleTaskCompletion(for taskId: UUID) {
+        if let index = tasks.firstIndex(where: { $0.id == taskId }) {
+            tasks[index].status = tasks[index].status == .completed ? .pending : .completed
         }
     }
     
-    func editTask(id: UUID, title: String, dueDate: Date, priority: TaskPriority, category: TaskCategory) {
+    func editTask(id: UUID, title: String, dueDate: Date, category: TaskCategory, priority: TaskPriority) {
         if let index = tasks.firstIndex(where: { $0.id == id }) {
             tasks[index].title = title
             tasks[index].dueDate = dueDate
-            tasks[index].priority = priority
             tasks[index].category = category
             tasks[index].status = determineStatus(for: dueDate)
+            tasks[index].priority = priority
         }
     }
 }

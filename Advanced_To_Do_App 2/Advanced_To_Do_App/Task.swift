@@ -27,11 +27,15 @@ enum TaskPriority: String, CaseIterable {
     case high = "High"
 }
 
+enum SortOption {
+    case priority, status
+}
+
 struct Task: Identifiable {
     let id = UUID()
     var title: String
     var dueDate: Date
     var status: TaskStatus
-    var priority: TaskPriority
     var category: TaskCategory
+    var priority: TaskPriority
 }

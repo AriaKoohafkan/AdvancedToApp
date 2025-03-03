@@ -5,156 +5,150 @@
 //  Created by Pegah Ghodsmohmmadi on 2025-02-28.
 //
 
-import Foundation
-
 import SwiftUI
 
 struct AddTaskView: View {
     @ObservedObject var taskViewModel: TaskViewModel
     @Binding var taskToEdit: Task?
     @Environment(\.presentationMode) var presentationMode
-
     @State private var title: String = ""
     @State private var dueDate: Date = Date()
     @State private var category: TaskCategory = .personal
-    @State private var selectedPriority: TaskPriority = .medium
+    @State private var priority: TaskPriority = .medium
 
     var body: some View {
-        ZStack {
-            // 🔲 Background Gradient with Blur Effect
-            LinearGradient(gradient: Gradient(colors: [Color.blue.opacity(0.4), Color.purple.opacity(0.4)]),
-                           startPoint: .topLeading, endPoint: .bottomTrailing)
-                .edgesIgnoringSafeArea(.all)
-                .blur(radius: 3)
+        NavigationView {
+            ZStack {
+              
+                LinearGradient(gradient: Gradient(colors: [Color.pink.opacity(0.8), Color.purple.opacity(0.5)]),
+                               startPoint: .topLeading, endPoint: .bottomTrailing)
+                    .edgesIgnoringSafeArea(.all)
 
-            VStack {
-                // 📌 Glassmorphic Task Form
-                VStack(spacing: 18) {
-                    Text(taskToEdit == nil ? "Add Task" : "Edit Task")
-                        .font(.system(size: 28, weight: .bold, design: .rounded))
-                        .foregroundColor(.white)
-                        .shadow(radius: 4)
-
-                    // ✍️ Task Title
-                    CustomTextField(placeholder:"Task Title", text: $title)
-
-                    // 📅 Due Date & Time Pickers
-                    VStack(spacing: 12) {
-                        DatePicker("Due Date", selection: $dueDate, displayedComponents: .date)
-                            .customDatePickerStyle()
-
-                        DatePicker("Time", selection: $dueDate, displayedComponents: [.hourAndMinute])
-                            .customDatePickerStyle()
-                    }
-
-                    // 🔥 Priority Picker (Segmented Control)
-                    VStack(alignment: .leading) {
-                        Text("Priority")
-                            .font(.headline)
-                            .foregroundColor(.white.opacity(0.8))
-                        Picker("Priority", selection: $selectedPriority) {
-                            ForEach(TaskPriority.allCases, id: \.self) { priority in
-                                Text(priority.rawValue).tag(priority)
-                            }
+                VStack {
+                    Form {
+                        Section(header: 
+                                    HStack {
+                            Spacer()
+                            
+                            Text("Task Details")
+                                .font(.headline)
+                                .fontWeight(.bold)
+                            Spacer()
                         }
-                        .pickerStyle(SegmentedPickerStyle())
-                        .padding()
-                        .background(Color.white.opacity(0.2))
-                        .cornerRadius(12)
-                    }
-                    .padding(.horizontal)
+                            .foregroundColor(.pink.opacity(0.6))
+                            .padding(.top, 10)) {
 
-                    // 📌 Category Picker
-                    VStack(alignment: .leading) {
-                        Text("Category")
-                            .font(.headline)
-                            .foregroundColor(.white.opacity(0.8))
-                        Picker("Category", selection: $category) {
-                            ForEach(TaskCategory.allCases, id: \.self) { category in
-                                Text(category.rawValue).tag(category)
+                            TextField("Task Title", text: $title)
+                                .padding()
+                                .background(Color.white.opacity(0.9))
+                                .foregroundColor(.pink.opacity(0.8))
+                                .cornerRadius(15)
+                                .shadow(color: Color.gray.opacity(0.3), radius: 8, x: 0, y: 4)
+                                .font(.headline)
+
+                        
+                            DatePicker("Due Date", selection: $dueDate, displayedComponents: .date)
+                                .padding()
+                                .background(Color.white.opacity(0.9))
+                                .cornerRadius(15)
+                                .shadow(color: Color.gray.opacity(0.3), radius: 8, x: 0, y: 4)
+                                
+                            DatePicker("Time", selection: $dueDate, displayedComponents: [.hourAndMinute])
+                                    .padding()
+                                    .background(Color.white.opacity(0.9))
+                                    .cornerRadius(15)
+                                    .shadow(color: Color.gray.opacity(0.3), radius: 8, x: 0, y: 4)
+
+                           
+                            Picker("Category", selection: $category) {
+                                ForEach(TaskCategory.allCases, id: \.self) { category in
+                                    Text(category.rawValue).tag(category)
+                                }
                             }
+                            .padding()
+                            .background(Color.white.opacity(0.9))
+                            .cornerRadius(15)
+                            .shadow(color: Color.gray.opacity(0.3), radius: 8, x: 0, y: 4)
                         }
-                        .pickerStyle(MenuPickerStyle())
-                        .padding()
-                        .background(Color.white.opacity(0.2))
-                        .cornerRadius(12)
-                    }
-                    .padding(.horizontal)
 
+                      
+                        Section {
+                            HStack {
+                                Spacer()
+                                Text("Priority")
+                                    .font(.headline)
+                                    .foregroundColor(.pink.opacity(0.6))
+                                Spacer()
+                            }
+
+                            Picker("Priority", selection: $priority) {
+                                ForEach(TaskPriority.allCases, id: \.self) { priority in
+                                    Text(priority.rawValue).tag(priority)
+                                }
+                            }
+                            .pickerStyle(SegmentedPickerStyle())
+                            .padding()
+                            .background(Color.pink.opacity(0.3))
+                            .cornerRadius(12)
+                            .shadow(color: Color.gray.opacity(0.2), radius: 5, x: 0, y: 4)
+                        }
+                    }
+                    .background(Color.pink)
+                    .cornerRadius(15)
                 }
                 .padding()
-                .background(Color.white.opacity(0.2))
-                .cornerRadius(20)
-                .shadow(radius: 10)
-                .padding(.horizontal, 20)
-                .padding(.top, 50)
-
-                Spacer()
-
-                // 🎯 Save/Update Button
-                Button(action: saveTask) {
-                    Text(taskToEdit == nil ? "Save Task" : "Update Task")
-                        .font(.headline)
-                        .frame(width: 250, height: 50)
-                        .background(LinearGradient(gradient: Gradient(colors: [Color.purple, Color.blue]),
-                                                   startPoint: .leading, endPoint: .trailing))
-                        .foregroundColor(.white)
-                        .cornerRadius(12)
-                        .shadow(radius: 5)
-                        .scaleEffect(title.isEmpty ? 0.95 : 1.0)
-                        .animation(.spring(), value: title)
-                }
-                .padding(.bottom, 30)
-                .disabled(title.isEmpty)
             }
-        }
-        .onAppear {
-            if let task = taskToEdit {
-                title = task.title
-                dueDate = task.dueDate
-                category = task.category
-                selectedPriority = task.priority
+           
+            .navigationTitle(taskToEdit == nil ? "Add Task" : "Edit Task")
+            .navigationBarTitleDisplayMode(.inline)
+        
+            .toolbar {
+              
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        taskToEdit = nil
+                        presentationMode.wrappedValue.dismiss()
+                    }) {
+                        Text("Cancel")
+                            .fontWeight(.bold)
+                            .foregroundColor(Color.red)
+                    }
+                }
+
+           
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        saveTask()
+                    }) {
+                        Text(taskToEdit == nil ? "Save" : "Update")
+                            .fontWeight(.bold)
+                            .foregroundColor(title.isEmpty ? Color.gray : Color.blue)
+                            .padding()
+                            .cornerRadius(10)
+                            .shadow(color: Color.blue.opacity(0.3), radius: 5, x: 0, y: 5)
+                    }
+                    .disabled(title.isEmpty)
+                }
+            }
+            .onAppear {
+                if let taskToEdit = taskToEdit {
+                    title = taskToEdit.title
+                    dueDate = taskToEdit.dueDate
+                    category = taskToEdit.category
+                    priority = taskToEdit.priority
+                }
             }
         }
     }
+    
 
-    // 📌 Save Task Function
     private func saveTask() {
         if let taskToEdit = taskToEdit {
-            taskViewModel.editTask(id: taskToEdit.id, title: title, dueDate: dueDate, priority: selectedPriority, category: category)
+            taskViewModel.editTask(id: taskToEdit.id, title: title, dueDate: dueDate, category: category, priority: priority)
         } else {
-            taskViewModel.addTask(title: title, dueDate: dueDate, category: category, priority: selectedPriority)
+            taskViewModel.addTask(title: title, dueDate: dueDate, category: category, priority: priority)
         }
         taskToEdit = nil
         presentationMode.wrappedValue.dismiss()
-    }
-}
-
-// 🎨 Custom DatePicker Styling
-extension View {
-    func customDatePickerStyle() -> some View {
-        self
-            .padding()
-           
-            .cornerRadius(12)
-            .shadow(radius: 3)
-            .foregroundColor(.white)
-            .padding(.horizontal)
-    }
-}
-
-// 🎯 Custom Text Field Component
-struct CustomTextField: View {
-    var placeholder: String
-    @Binding var text: String
-
-    var body: some View {
-        TextField(placeholder, text: $text)
-            .padding()
-           
-            .cornerRadius(12)
-            .shadow(radius: 3)
-            .foregroundColor(.white)
-            .padding(.horizontal)
     }
 }

@@ -2,59 +2,68 @@
 //  WelcomeView.swift
 //  Advanced_To_Do_App
 //
-//  Created by Pegah Ghodsmohmmadi on 2025-02-28.
+//  Created by Pegah Ghodsmohmmadi on 2025-03-02.
 //
-
-import Foundation
 
 import SwiftUI
 
+// Step 1: Create the Welcome View
 struct WelcomeView: View {
-    @State private var navigateToContent = false
+    @State private var isActive: Bool = false
    
     var body: some View {
-        NavigationView {
-            ZStack {
-             
-                LinearGradient(gradient: Gradient(colors: [Color.blue.opacity(0.6), Color.purple.opacity(0.6)]), startPoint: .topLeading, endPoint: .bottomTrailing)
-                    .edgesIgnoringSafeArea(.all)
-               
-                VStack(spacing: 20) {
+        VStack {
+            
+            if isActive {
+                // When isActive is true, navigate to the main task view
+                ContentView()
+            } else {
+                // Splash screen or Welcome screen content
+                ZStack {
+                    LinearGradient(gradient: Gradient(colors: [Color.pink.opacity(0.6), Color.purple.opacity(0.3)]),
+                                   startPoint: .topLeading, endPoint: .bottomTrailing)
+                        .edgesIgnoringSafeArea(.all)
+                   
+                    VStack {
+                        Image("Welcome-Image")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(height: 300)
+                            .cornerRadius(20)
+                        
+                        Text("Welcome to The To_Do App")
+                            .font(.largeTitle)
+                            .bold()
+                            .foregroundColor(.white)
+                            .padding()
+                        
+                        Text("Team Members: Pegah Ghods Mohammadi, Aria Koohafkan")
+                            .font(.caption)
+                            .bold()
+                            .foregroundColor(.white)
+                            .padding()
+                        
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.system(size: 70))
+                            .foregroundColor(.white)
+                            .padding()
+
                   
-                    Text("Welcome to the TaskManager")
-                        .font(.system(size: 36, weight: .bold, design: .rounded))
-                        .foregroundColor(.white)
-                        .shadow(radius: 3)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal)
-                   
-                
-                    Text("Organize your tasks effortlessly and stay productive. Let's get started!")
-                        .font(.system(size: 18, weight: .medium, design: .rounded))
-                        .foregroundColor(.white.opacity(0.8))
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 30)
-                   
-                   
-                    NavigationLink(destination: ContentView(), isActive: $navigateToContent) {
-                        Button(action: {
-                            withAnimation {
-                                navigateToContent = true
-                            }
-                        }) {
-                            Text("Let's Start")
-                                .font(.system(size: 20, weight: .bold, design: .rounded))
-                                .foregroundColor(.white)
-                                .padding()
-                                .frame(maxWidth: 200)
-                                .background(LinearGradient(gradient: Gradient(colors: [Color.purple, Color.blue]), startPoint: .leading, endPoint: .trailing))
-                                .cornerRadius(12)
-                                .shadow(radius: 5)
+                        Text("Loading...")
+                            .foregroundColor(.white)
+                            .padding(.top, 20)
+                    }
+                }
+                .onAppear {
+              
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                        withAnimation {
+                            self.isActive = true
                         }
                     }
-                    .padding(.top, 30)
                 }
             }
         }
     }
 }
+

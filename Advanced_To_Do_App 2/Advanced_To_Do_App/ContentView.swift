@@ -4,199 +4,208 @@
 //
 //  Created by Pegah Ghodsmohmmadi on 2025-02-28.
 //
+
 import SwiftUI
 
 struct ContentView: View {
-   
     @StateObject private var taskViewModel = TaskViewModel()
     @State private var showAddTask = false
     @State private var taskToEdit: Task? = nil
-    @State private var searchText = ""
-    @State private var isEditTaskPresented = false
-   
+    @State private var sortOption = SortOption.priority
+
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
-            
-                LinearGradient(gradient: Gradient(colors: [Color.blue.opacity(0.3), Color.purple.opacity(0.3)]), startPoint: .top, endPoint: .bottom)
-                    .edgesIgnoringSafeArea(.all)
-               
-                VStack {
-                 
-                    HStack {
-                        Text("To-Do List")
-                            .font(.system(size: 32, weight: .bold, design: .rounded))
-                            .foregroundColor(.white)
-                            .shadow(radius: 3)
-                       
-                        Spacer()
-                       
-                       
-                        TextField("Search by category...", text: $searchText)
-                            .padding(10)
-                            .background(Color.white.opacity(0.2))
-                            .cornerRadius(10)
-                            .foregroundColor(.white)
-                            .shadow(radius: 2)
-                    }
-                    .padding(.horizontal)
-                    .padding(.top, 10)
-                   
+                LinearGradient(gradient: Gradient(colors: [Color.pink.opacity(0.3), Color.pink.opacity(0.5)]),
+                               startPoint: .topLeading, endPoint: .bottomTrailing)
+                .edgesIgnoringSafeArea(.all)
                 
-                    List {
-                        ForEach(filteredTasks) { task in
-                            taskRow(for: task)
-                                .listRowBackground(Color.clear)
-                        }
-                       
+                VStack {
+                    Picker("Sort by", selection: $sortOption) {
+                        Text("Priority").tag(SortOption.priority)
+                        Text("Status").tag(SortOption.status)
                     }
-                    .scrollContentBackground(.hidden)
-                    .listStyle(PlainListStyle())
-                    .background(Color.clear)
-                    .foregroundColor(.white)
-                   
+                    .pickerStyle(SegmentedPickerStyle())
+                    .padding()
+                    
+                    List {
+                        if taskViewModel.tasks.isEmpty {
+                            noTasksView
+                        } else {
+                            ForEach(sortedTasks()) { task in
+                                taskRow(for: task)
+                                    .swipeActions(edge: .leading) {
+                                        Button(action: {
+                                            taskViewModel.toggleTaskCompletion(for: task.id)
+                                        }) {
+                                            Label(task.status == .completed ? "Undo" : "Complete", systemImage: task.status == .completed ? "arrow.uturn.left.circle.fill" : "checkmark.circle.fill")
+                                        }
+                                        .tint(task.status == .completed ? .gray : .green)
+                                    }
+                            }
+                            .onDelete(perform: deleteTask)
+                        }
+                    }
+                }
+                .navigationTitle("")
+                .toolbar {
+                    ToolbarItem(placement: .principal) {
+                        Text("To-Do List")
+                            .font(.title)
+                            .padding(7)
+                            .fontWeight(.bold)
+                            .foregroundColor(.pink.opacity(0.8))
+                    }
+                }
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    addButton
                 }
                 .padding(.top)
             }
-            .navigationBarItems(trailing: addButton)
             .sheet(isPresented: $showAddTask) {
                 AddTaskView(taskViewModel: taskViewModel, taskToEdit: $taskToEdit)
             }
         }
     }
-   
-   
-    private var filteredTasks: [Task] {
-        if searchText.isEmpty {
-            return taskViewModel.tasks
-        } else {
-            return taskViewModel.tasks.filter { $0.category.rawValue.localizedCaseInsensitiveContains(searchText) }
+
+
+    // MARK: - No Tasks View
+    private var noTasksView: some View {
+        VStack {
+            Image(systemName: "note.text")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 100, height: 100)
+                .foregroundColor(.pink.opacity(0.5))
+           
+            Text("No tasks created yet")
+                .font(.title3)
+                .fontWeight(.semibold)
+                .foregroundColor(.pink.opacity(0.8))
+           
+            Text("Start by adding a new task!")
+                .font(.subheadline)
+                .foregroundColor(.pink.opacity(0.6))
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding()
     }
-   
- 
+
+    // MARK: - Add Button
     private var addButton: some View {
         Button(action: {
             taskToEdit = nil
             showAddTask.toggle()
         }) {
-            Image(systemName: "plus.circle.fill")
-                .font(.largeTitle)
+            Image(systemName: "plus")
+                .font(.title2)
                 .foregroundColor(.white)
+                .padding(10)
+                .background(Color.pink.opacity(0.8), in: Circle())
                 .shadow(radius: 5)
         }
     }
-   
- 
+
+    // MARK: - Delete Task
+    private func deleteTask(at offsets: IndexSet) {
+        offsets.forEach { index in
+            let task = taskViewModel.tasks[index]
+            taskViewModel.deleteTask(byId: task.id)
+        }
+    }
+
+    // MARK: - Task Row
     private func taskRow(for task: Task) -> some View {
         HStack {
-         
-            Image(systemName: task.status == .completed ? "checkmark.circle.fill" : "circle")
-                .resizable()
-                .frame(width: 24, height: 24)
-                .foregroundColor(task.status == .completed ? .green : .white)
-                .onTapGesture {
-                    withAnimation(.easeInOut(duration: 0.3)) {
-                        taskViewModel.toggleTaskCompletion(task: task)
-                    }
-                }
-           
-            VStack(alignment: .leading, spacing: 5) {
+            VStack(alignment: .leading, spacing: 6) {
                 Text(task.title)
-                    .font(.system(size: 20, weight: .medium, design: .rounded))
-                    .foregroundColor(.white)
+                    .font(.headline)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.pink.opacity(0.8))
                
                 Text("Due: \(formattedDate(task.dueDate))")
                     .font(.subheadline)
-                    .foregroundColor(.white.opacity(0.7))
+                    .foregroundColor(.pink.opacity(0.4))
                
                 Text("Category: \(task.category.rawValue)")
                     .font(.caption)
-                    .foregroundColor(.white.opacity(0.7))
+                    .foregroundColor(.pink.opacity(0.4))
+               
                 Text("Priority: \(task.priority.rawValue)")
                     .font(.caption)
-                    .padding(6)
-                    .background(priorityColor(for: task.priority).opacity(0.3))
+                    .padding(8)
+                    .background(priorityColor(for: task.priority).opacity(0.2))
                     .foregroundColor(priorityColor(for: task.priority))
                     .cornerRadius(6)
             }
-           
-            Spacer()
-           
             Text(task.status.rawValue)
-                .font(.caption)
-                .padding(8)
-                .background(statusColor(for: task.status).opacity(0.2))
                 .foregroundColor(statusColor(for: task.status))
-                .cornerRadius(5)
+                .fontWeight(.bold)
+                .padding(6)
+                .background(statusColor(for: task.status).opacity(0.2))
+                .cornerRadius(6)
            
             editButton(for: task)
-            
-            
-            deleteButton(for: task)
         }
-        .padding()
-        .background(Color.white.opacity(0.2))
+        .padding(.horizontal)
+        .padding(.vertical, 8)
+        .background(task.status == .completed ? Color.green.opacity(0.3) : Color.pink.opacity(0.1))
         .cornerRadius(12)
-        .shadow(radius: 3)
-        .padding(.vertical, 5)
+        .shadow(radius: 5)
     }
-   
-   
+
+    // MARK: - Status Color
     private func statusColor(for status: TaskStatus) -> Color {
         switch status {
-        case .overdue: return .red
-        case .nearDue: return .orange
-        case .pending: return .blue
-        case .completed: return .green
+        case .overdue:
+            return .red
+        case .nearDue:
+            return .orange
+        case .pending:
+            return .blue
+        case .completed:
+            return .green
         }
     }
-    
+   
+    // MARK: - Sorting Tasks
+    private func sortedTasks() -> [Task] {
+        switch sortOption {
+        case .priority:
+            return taskViewModel.tasks.sorted { $0.priority.rawValue < $1.priority.rawValue }
+        case .status:
+            return taskViewModel.tasks.sorted { $0.status.rawValue < $1.status.rawValue }
+        }
+    }
+
+    // MARK: - Priority Color
     private func priorityColor(for priority: TaskPriority) -> Color {
         switch priority {
-        case .low: return .green
-        case.medium: return .orange
-        case .high: return .red
+        case .low:
+            return .green
+        case .medium:
+            return .orange
+        case .high:
+            return .red
         }
     }
-    
-    private func deleteButton(for task: Task) -> some View {
-        Button(action: {
-            taskToEdit = nil
-            taskViewModel.deleteTask(task: task)
-        }) {
-            Image(systemName: "trash.circle.fill")
-                .foregroundColor(.red)
-                .font(.title2)
-                .shadow(radius: 2)
-        }
-    }
-    
-    private func deleteTask(task: Task) {
-        if let index = taskViewModel.tasks.firstIndex(where: { $0.id == task.id }) {
-            taskViewModel.tasks.remove(at: index)
-           }
-       }
-    
 
+    // MARK: - Edit Button
     private func editButton(for task: Task) -> some View {
         Button(action: {
             taskToEdit = task
-            isEditTaskPresented = true
+            showAddTask.toggle()
         }) {
-            Image(systemName: "pencil.circle.fill")
-                .foregroundColor(.white)
+            Image(systemName: "pencil")
                 .font(.title2)
-                .shadow(radius: 2)
-        }
-        
-        .sheet(isPresented: $isEditTaskPresented) {
-            AddTaskView(taskViewModel: taskViewModel, taskToEdit: $taskToEdit)
+                .foregroundColor(.pink)
+                .padding(8)
+                .background(Circle().fill(Color.white).shadow(radius: 3))
         }
     }
 
-   
- 
+    // MARK: - Format Date
     private func formattedDate(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
