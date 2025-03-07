@@ -20,7 +20,7 @@ struct AddTaskView: View {
         NavigationView {
             ZStack {
               
-                LinearGradient(gradient: Gradient(colors: [Color.pink.opacity(0.8), Color.purple.opacity(0.5)]),
+                LinearGradient(gradient: Gradient(colors: [Color.pink.opacity(0.3), Color.pink.opacity(0.6)]),
                                startPoint: .topLeading, endPoint: .bottomTrailing)
                     .edgesIgnoringSafeArea(.all)
 
