@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  Advanced_To_Do_App
-//
-//  Created by Pegah Ghodsmohmmadi on 2025-02-28.
-//
-
 import SwiftUI
 
 struct ContentView: View {
@@ -12,13 +5,15 @@ struct ContentView: View {
     @State private var showAddTask = false
     @State private var taskToEdit: Task? = nil
     @State private var sortOption = SortOption.priority
+    @State private var showCalendar = false
+    @State private var selectedDate: Date? = nil
 
     var body: some View {
         NavigationStack {
             ZStack {
                 LinearGradient(gradient: Gradient(colors: [Color.pink.opacity(0.3), Color.pink.opacity(0.5)]),
                                startPoint: .topLeading, endPoint: .bottomTrailing)
-                .edgesIgnoringSafeArea(.all)
+                    .edgesIgnoringSafeArea(.all)
                 
                 VStack {
                     Picker("Sort by", selection: $sortOption) {
@@ -50,7 +45,7 @@ struct ContentView: View {
                 .navigationTitle("")
                 .toolbar {
                     ToolbarItem(placement: .principal) {
-                        Text("To-Do List")
+                        Text("Tickit")
                             .font(.title)
                             .padding(7)
                             .fontWeight(.bold)
@@ -60,15 +55,18 @@ struct ContentView: View {
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     addButton
+                    calendarButton
                 }
                 .padding(.top)
             }
             .sheet(isPresented: $showAddTask) {
                 AddTaskView(taskViewModel: taskViewModel, taskToEdit: $taskToEdit)
             }
+            .sheet(isPresented: $showCalendar) {
+                CalendarView(selectedDate: $selectedDate, taskViewModel: taskViewModel)
+            }
         }
     }
-
 
     // MARK: - No Tasks View
     private var noTasksView: some View {
@@ -99,6 +97,20 @@ struct ContentView: View {
             showAddTask.toggle()
         }) {
             Image(systemName: "plus")
+                .font(.title2)
+                .foregroundColor(.white)
+                .padding(10)
+                .background(Color.pink.opacity(0.8), in: Circle())
+                .shadow(radius: 5)
+        }
+    }
+
+    // MARK: - Calendar Button
+    private var calendarButton: some View {
+        Button(action: {
+            showCalendar.toggle()
+        }) {
+            Image(systemName: "calendar")
                 .font(.title2)
                 .foregroundColor(.white)
                 .padding(10)
@@ -213,3 +225,4 @@ struct ContentView: View {
         return formatter.string(from: date)
     }
 }
+

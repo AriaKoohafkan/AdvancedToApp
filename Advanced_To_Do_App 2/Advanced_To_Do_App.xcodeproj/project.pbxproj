@@ -19,6 +19,10 @@
 		015FAE672D7187B800FA70A9 /* AddTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015FAE662D7187B800FA70A9 /* AddTaskView.swift */; };
 		0165990D2D74D93A00BECCFF /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0165990C2D74D91E00BECCFF /* WelcomeView.swift */; };
 		01EEE7362D7506E200DA6AA3 /* Welcome-Image.svg in Resources */ = {isa = PBXBuildFile; fileRef = 01EEE7352D7506E200DA6AA3 /* Welcome-Image.svg */; };
+		BED410AC2D79FA0A00DC32B7 /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED410AB2D79FA0A00DC32B7 /* GradientView.swift */; };
+		BED410AE2D79FE1500DC32B7 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED410AD2D79FE1500DC32B7 /* CalendarView.swift */; };
+		BED410B02D7A06E700DC32B7 /* CalendarGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED410AF2D7A06E700DC32B7 /* CalendarGridView.swift */; };
+		BED410B22D7A0B2B00DC32B7 /* TaskDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED410B12D7A0B2B00DC32B7 /* TaskDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,6 +58,10 @@
 		015FAE662D7187B800FA70A9 /* AddTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTaskView.swift; sourceTree = "<group>"; };
 		0165990C2D74D91E00BECCFF /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		01EEE7352D7506E200DA6AA3 /* Welcome-Image.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "Welcome-Image.svg"; path = "Preview Content/Welcome-Image.svg"; sourceTree = "<group>"; };
+		BED410AB2D79FA0A00DC32B7 /* GradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
+		BED410AD2D79FE1500DC32B7 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
+		BED410AF2D7A06E700DC32B7 /* CalendarGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarGridView.swift; sourceTree = "<group>"; };
+		BED410B12D7A0B2B00DC32B7 /* TaskDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,6 +121,10 @@
 				015FAE622D717EBA00FA70A9 /* Task.swift */,
 				015FAE642D717F7F00FA70A9 /* TaskViewModel.swift */,
 				015FAE662D7187B800FA70A9 /* AddTaskView.swift */,
+				BED410AB2D79FA0A00DC32B7 /* GradientView.swift */,
+				BED410AD2D79FE1500DC32B7 /* CalendarView.swift */,
+				BED410AF2D7A06E700DC32B7 /* CalendarGridView.swift */,
+				BED410B12D7A0B2B00DC32B7 /* TaskDetailView.swift */,
 			);
 			path = Advanced_To_Do_App;
 			sourceTree = "<group>";
@@ -275,8 +287,12 @@
 			files = (
 				015FAE3B2D717E3400FA70A9 /* ContentView.swift in Sources */,
 				0165990D2D74D93A00BECCFF /* WelcomeView.swift in Sources */,
+				BED410AE2D79FE1500DC32B7 /* CalendarView.swift in Sources */,
 				015FAE672D7187B800FA70A9 /* AddTaskView.swift in Sources */,
+				BED410B22D7A0B2B00DC32B7 /* TaskDetailView.swift in Sources */,
 				015FAE652D717F7F00FA70A9 /* TaskViewModel.swift in Sources */,
+				BED410B02D7A06E700DC32B7 /* CalendarGridView.swift in Sources */,
+				BED410AC2D79FA0A00DC32B7 /* GradientView.swift in Sources */,
 				015FAE632D717EBA00FA70A9 /* Task.swift in Sources */,
 				015FAE392D717E3400FA70A9 /* Advanced_To_Do_AppApp.swift in Sources */,
 			);
@@ -449,6 +465,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -477,6 +494,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

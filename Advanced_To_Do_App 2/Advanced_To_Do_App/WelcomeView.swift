@@ -15,10 +15,10 @@ struct WelcomeView: View {
         VStack {
             
             if isActive {
-                // When isActive is true, navigate to the main task view
+             
                 ContentView()
             } else {
-                // Splash screen or Welcome screen content
+            
                 ZStack {
                     LinearGradient(gradient: Gradient(colors: [Color.pink.opacity(0.6), Color.purple.opacity(0.3)]),
                                    startPoint: .topLeading, endPoint: .bottomTrailing)
@@ -31,7 +31,7 @@ struct WelcomeView: View {
                             .frame(height: 300)
                             .cornerRadius(20)
                         
-                        Text("Welcome to The To_Do App")
+                        Text("Welcome to Tickit")
                             .font(.largeTitle)
                             .bold()
                             .foregroundColor(.white)
